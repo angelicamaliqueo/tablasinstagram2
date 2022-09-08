@@ -8,31 +8,48 @@ from eralchemy import render_er
 
 Base = declarative_base()
 
-class Person(Base):
-    __tablename__ = 'person'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
+class User(Base):
+    __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    name = Column(String(120), unique=True, nullable=False)
+    last_name = Column(String(120), unique=True, nullable=False)
+    email = Column(String(120), unique=True, nullable=False)
+    password = Column(String(120), unique=False, nullable=False)
+    fecha_nacimiento = Column(String(120), unique=False, nullable=False)
+    imagen_perfil = Column(String(120), unique=False, nullable=False)
 
-class Address(Base):
-    __tablename__ = 'address'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
+class Follower(Base):
+    __tablename__ = 'follower'
     id = Column(Integer, primary_key=True)
-    street_name = Column(String(250))
-    street_number = Column(String(250))
-    post_code = Column(String(250), nullable=False)
-    person_id = Column(Integer, ForeignKey('person.id'))
-    person = relationship(Person)
+    user_id = Column(Integer, ForeignKey('user.id'))
+ 
 
-    def to_dict(self):
-        return {}
+class Posts(Base):
+    __tablename__ = 'posts'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    post_type = Column(String(120))
+    post_place = Column(String(120))
+    post_comment = Column(String(120))
+    created_at = Column(String(120))
+    updated_at = Column(String(120))
+
+class Posts_comentario(Base):
+    __tablename__ = 'posts_comentario'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    post_id = Column(Integer, ForeignKey('posts.id'))
+    comment = Column(String(120))
+    created_at = Column(String(120))
+    delete_at = Column(String(120))
+
+class Post_likes(Base):
+    __tablename__ = 'post_likes'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    post_id = Column(Integer, ForeignKey('posts.id'))
+    created_at = Column(String(120))
+    delete_at = Column(String(120))
 
 ## Draw from SQLAlchemy base
-try:
-    result = render_er(Base, 'diagram.png')
-    print("Success! Check the diagram.png file")
-except Exception as e:
-    print("There was a problem genering the diagram")
-    raise e
+render_er(Base, 'diagram.png')
